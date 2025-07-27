@@ -32,7 +32,6 @@ def help(obj=None):
 
 
 __all__ = [
-    "help",
     "timer",
     "install_packages",
     "import_packages",
