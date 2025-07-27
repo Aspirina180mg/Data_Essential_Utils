@@ -38,7 +38,7 @@ __all__ = [
     "extract",
     "info",
     "clean",
-    "unique_count_all_columns",
+    "unique_values",
     "unique_count_top_10",
     "unique_count_single_column",
     "unique_count_sorted",
