@@ -1,4 +1,4 @@
-# desu (Data Essential Utils) 🐍
+# desu (Data ESsential Utils)
 
 [![PyPI version](https://img.shields.io/pypi/v/desu.svg)](https://pypi.org/project/desu/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -16,17 +16,14 @@ You can install desu directly from PyPI:
 pip install desu
 ```
 
-
 ## 📦 Features
 
 * Easy-to-use utility functions for data projects.
 * Simple API for extracting, transforming, and analyzing data.
-
 * Modular and extensible design.
 * Lightweight and dependency-friendly.
 
 ## 🛠️ Usage Example
-
 
 ```python
 import desu
