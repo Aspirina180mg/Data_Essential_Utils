@@ -610,7 +610,10 @@ def bivariate():
 def multivariate():
     pass
 
+"""
+Testing if necessary to update globals with callable items
 
 globals().update({k: v for k, v in locals().items() if callable(v)})
 # This line ensures that all functions are accessible at the module level
 # and can be imported directly without needing to reference the module name.
+"""

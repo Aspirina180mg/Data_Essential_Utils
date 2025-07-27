@@ -1,8 +1,9 @@
-import core as desu
+import desu
 
 desu.timer.show()
 desu.timer.mark()
 desu.timer.start()
 desu.timer.mark()
 desu.timer.show()
-#help(desu)
+help(desu.timer)
+help(desu)
