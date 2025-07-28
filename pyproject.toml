@@ -1,6 +1,6 @@
 [project]
 name = "desu"
-version = "0.1.4"
+version = "0.1.5"
 description = "Lightweight utilities for data science, data engineering, and data analysis projects."
 authors = [
     {name = "Misael García", email = "misagtor@gmail.com"},
