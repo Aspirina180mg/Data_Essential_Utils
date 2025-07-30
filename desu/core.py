@@ -1,6 +1,6 @@
 # Module-level docstring
 """
-desu (Data ESsential Utils) v0.5.0
+desu (Data ESsential Utils) v0.1.5
 
 Essetial tools for data science and data analysis projects.
 Installation of packages, importing with aliases, data extraction,
@@ -11,7 +11,7 @@ Functions:
 
     help(obj=None):
         Displays the desu package documentation, or the docstring of a specific function or module.
-    
+
     timer:
         Provides a simple timer utility to measure elapsed time.
         - start(): Starts the timer.
@@ -56,7 +56,7 @@ Functions:
         optionally rounding to a specified number of decimal places. Also creates a
         binary flag column indicating if the original column had missing values.
 
-    
+
     univariate(df, column):
         Performs univariate analysis on a DataFrame column, including descriptive
         statistics, skewness, kurtosis, and visualizations.
@@ -80,9 +80,10 @@ __all__ = [
     "unique_count_single_column",
     "unique_count_sorted",
     "fill_with_mean",
+    "fill_with_median",
     "univariate",
     "bivariate",
-    "multivariate"
+    "multivariate",
 ]
 
 # Imports
@@ -109,7 +110,6 @@ class _TimeUtils:
         cls._start = time.time()
         print("Timer started.")
 
-
     @classmethod
     def show(cls):
         """
@@ -134,6 +134,7 @@ class _TimeUtils:
             return
         cls._start = time.time()
         print("Timer marked. Ready for next measurement.")
+
 
 timer = _TimeUtils
 
@@ -208,36 +209,44 @@ def import_packages(packages):
         packages (list of str): List of package names to import.
 
     """
+
     aliases = {
-        "numpy": "np",
-        "pandas": "pd",
-        "seaborn": "sns",
+        "bokeh": "bk",
+        "beautifulsoup4": "bs4",
+        "fastai": "fa",
+        "lightgbm": "lgb",
+        "matplotlib": "mpl",
         "matplotlib.pyplot": "plt",
-        "sklearn": "sklearn",
-        "tensorflow": "tf",
-        "torch": "torch",
-        "keras": "keras",
-        "statsmodels.api": "sm",
+        "nltk": "nltk",
+        "openpyxl": "pxl",
+        "pandas": "pd",
+        "pandas_profiling": "pp",
         "plotly.express": "px",
         "plotly.graph_objects": "go",
-        "scipy": "sp",
-        "xgboost": "xgb",
-        "lightgbm": "lgb",
-        "nltk": "nltk",
-        "spacy": "spacy",
-        "requests": "req",
-        "beautifulsoup4": "bs4",
-        "pytorch_lightning": "pl",
-        "dask": "dask",
-        "joblib": "joblib",
-        "tqdm": "tqdm",
         "pyarrow": "pa",
+        "pyodbc": "pyodbc",
+        "PIL": "PIL",
+        "pytorch_lightning": "pl",
+        "requests": "req",
+        "scikit-image": "skimage",
+        "scikit-learn": "sklearn",
+        "seaborn": "sns",
+        "sqlalchemy": "sa",
+        "spacy": "spacy",
+        "statsmodels.api": "sm",
+        "tensorflow": "tf",
+        "torch": "torch",
+        "transformers": "hf",
+        "xgboost": "xgb",
     }
 
     for package in packages:
         try:
             if package in aliases:
-                globals()[aliases[package]] = importlib.import_module(package)
+                if package == "scikit-learn":
+                    globals()[aliases["sklearn"]] = importlib.import_module("sklearn")
+                else:
+                    globals()[aliases[package]] = importlib.import_module(package)
                 print(f"{package} imported as {aliases[package]}")
             else:
                 globals()[package] = importlib.import_module(package)
@@ -538,6 +547,59 @@ def fill_with_mean(df, column_name, decimals=None):
         )
 
 
+def fill_with_median(df, column_name, decimals=None, groupby_columns=None):
+    """
+    Fills missing values in the specified column with the median value of that column in place.
+    Optionally fills using group-wise medians if groupby_columns is provided.
+    Also stores a binary flag indicating if the column had missing values and was filled.
+
+    Parameters:
+    - df: pandas DataFrame
+    - column_name: str, the name of the column to fill
+    - decimals: int, optional, number of decimal places to round the median value(s). Default is None.
+    - groupby_columns: str or list of str, optional, columns to group by for median calculation.
+
+    Returns:
+    - str: confirmation message including the median value used and a statement about whether the column was filled,
+      along with the binary flag column name.
+    """
+    # Create binary flag column for missing values
+    flag_column_name = f"{column_name}_missing"
+    df[flag_column_name] = df[column_name].isnull().astype(int)
+
+    # Check if there are missing values
+    had_missing_values = df[column_name].isnull().sum() > 0
+
+    if groupby_columns:
+        # Group-wise filling with medians
+        grouped = df.groupby(groupby_columns)[column_name]
+        medians = grouped.transform("median")
+
+        if decimals is not None:
+            medians = medians.round(decimals)
+
+        df[column_name] = df[column_name].fillna(medians)
+        fill_info = "group-wise median(s)"
+    else:
+        # Global median
+        median_value = df[column_name].median()
+        if decimals is not None:
+            median_value = round(median_value, decimals)
+
+        df[column_name] = df[column_name].fillna(median_value)
+        fill_info = f"median value: {median_value}"
+
+    if had_missing_values:
+        return (
+            f"Column '{column_name}' has been filled with {fill_info}. "
+            f"Column: '{flag_column_name}' has been created."
+        )
+    else:
+        return (
+            f"Column '{column_name}' did not have missing values, no filling necessary."
+        )
+
+
 def univariate(df, column):
     """
     Perform univariate analysis of a column in a DataFrame.
@@ -609,11 +671,3 @@ def bivariate():
 
 def multivariate():
     pass
-
-"""
-Testing if necessary to update globals with callable items
-
-globals().update({k: v for k, v in locals().items() if callable(v)})
-# This line ensures that all functions are accessible at the module level
-# and can be imported directly without needing to reference the module name.
-"""

@@ -21,6 +21,7 @@ __all__ = [
     "unique_count_single_column",
     "unique_count_sorted",
     "fill_with_mean",
+    "fill_with_median",
     "univariate",
     "bivariate",
     "multivariate"
