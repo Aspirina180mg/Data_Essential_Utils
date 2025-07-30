@@ -145,6 +145,10 @@ def install_packages(packages):
 
     Args:
         packages (list of str): List of package names to install.
+        
+        it's recommended to use a helper list, like:
+        packages = ["numpy", "scikit-learn", "scipy"]
+        consider that desu already includes pandas, seaborn and matplotlib
     """
     installed, already_installed, failed, errors = [], [], [], []
 
@@ -207,7 +211,10 @@ def import_packages(packages):
 
     Args:
         packages (list of str): List of package names to import.
-
+        
+        it's recommended to use a helper list, like:
+        packages = ["numpy", "scikit-learn", "scipy"]
+        consider that desu already includes pandas, seaborn and matplotlib
     """
 
     aliases = {
